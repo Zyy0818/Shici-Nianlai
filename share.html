@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	
+	<title>search_author</title>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+	<script src="node_modules/element-ui/lib/index.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script type="text/javascript" src="search.js"></script>
+	<script type="text/javascript" src="navigator.js"></script>
+	<style>
+html{font-size:62.5%;}
+body {font:normal 100% Arial,sans-serif;font-size:14px; font-size:1.4rem; } 
+img { width:100%; -ms-interpolation-mode: bicubic;} 
+	[v-cloak]{
+		display: none;
+	}
+.top{
+	display:inline-block;
+	width:80%;
+	height: 30rem;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-left: 10%
+}
+.kuang{
+	display:inline-block;
+	width:85%;
+	height: auto;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-top: 1rem;
+	margin-left: 10%;
+	margin-right:10%;
+}
+
+.left{ width:30%; float:left} 
+.right{ width:70%; float:right;}
+@media screen and (max-device-width: 48rem) {
+    #divMain{
+    float: none;
+    width:auto;
+    }
+    #divSidebar {
+    display:none;
+    }
+}
+table{
+	border-collapse: collapse;
+}
+
+a{  text-decoration:none;}
+a:hover{  text-decoration:none;}
+a:active{  text-decoration:none;}
+	</style>
+</head>
+<body style="background-color: #E1E0C7">
+
+		<div class="container" id="container" v-cloak>
+			<div>
+				<common-navigator active="1">
+					
+				</common-navigator>
+			
+			<table style="width:100%">
+				<tr>
+					<td>
+						<div style="background-color:pink;display:inline-block;margin: 3rem 30rem;"><img 
+							:src="pic" style="width:90rem;height:45rem;">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div style="margin-top:1rem;margin-left:45%">
+							<a :href="pic" :download="titlename"><el-button type="primary" icon="el-icon-download">保存图片</el-button></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			
+			</div>
+		</div>
+
+
+
+	<script>
+		
+		
+
+
+		 
+		
+	new Vue({
+		data(){
+			return{
+					selectedId:null,
+					pic:null,
+					titlename:null
+				}		
+			},
+		methods:{
+			sharepic(){
+				const urL=new URLSearchParams(window.location.search);
+						 if(urL.has('titleid')){
+							this.selectedId=urL.get('titleid');
+			    var uri = 'http://rap2.taobao.org:38080/app/mock/245255/api/share/'+this.selectedId;
+			    console.log(uri);
+				axios({
+				 	 method: 'get',
+					  url: uri,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+						this.pic = response.data.data.picLoc;
+						console.log(response);
+						console.log(this.pic);
+			       	}
+			       	
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+
+
+			      axios({
+				 	 method: 'get',
+					  url: 'http://rap2.taobao.org:38080/app/mock/245255/api/poetry/id/'+this.selectedId,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+						this.titlename = response.data.data.title;
+						
+			       	}
+			       	
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+			
+				  }
+			}
+			},
+			mounted:function(){
+				this.sharepic();
+			}
+		
+		}).$mount('#container')
+	</script>
+</body>
+</html>

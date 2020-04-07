@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	
+	<title>poem</title>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+	<script src="node_modules/element-ui/lib/index.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script type="text/javascript" src="search.js"></script>
+	<script type="text/javascript" src="categories.js"></script>
+	<script type="text/javascript" src="star.js"></script>
+	<script type="text/javascript" src="navigator.js"></script>
+	<style>
+html{font-size:62.5%;}
+body {font:normal 100% Arial,sans-serif;font-size:14px; font-size:1.4rem; } 
+img { width:100%; -ms-interpolation-mode: bicubic;} 
+	[v-cloak]{
+		display: none;
+	}
+a{ color:white; text-decoration:none;}
+a:hover{ color:white; text-decoration:none;}
+a:active{ color:white; text-decoration:none;}
+	
+.poemkuang{
+	display:inline-block;
+	width:70rem;
+	height: auto;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+}
+.rightkuang{
+	display:inline-block;
+	width:38rem;
+	height: auto;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	
+}
+.left{ width:30%; float:left} 
+.right{ width:70%; float:right;}
+@media screen and (max-device-width: 48rem) {
+    #divMain{
+    float: none;
+    width:auto;
+    }
+    #divSidebar {
+    display:none;
+    }
+}
+table{
+	border-collapse:collapse;
+}
+	</style>
+</head>
+<body style="background-color: #E1E0C7">
+	<div id="app">
+		
+				<common-navigator active="1">
+				</common-navigator>
+			<search-component>
+			</search-component> 
+				
+			
+			<table style="width:100%">
+				<tr>
+					<!--第一列-->
+					<td style="width:62%;vertical-align:top;text-align:right;padding-right: 6rem;
+					padding-top: 2rem">
+						<table style="width:100%;text-align:right;">
+							<tr><td ><kuang1-component></kuang1-component></td></tr>
+							<tr><td style="padding-top: 3rem"><kuang2-component></kuang2-component></td></tr>
+						</table>
+					</td >
+					<!--第二列-->
+					<td style="width:38%;vertical-align:top;padding-top:2rem;padding-left:2rem;">
+					<categories-component></categories-component>
+					</td>
+				</tr>
+			</table>	
+	</div>
+	<script>
+		
+		Vue.component('my-search',{
+			template:`
+			<div>
+			<div style="display:inline-block;float:left;margin-top:0rem;margin-left:8%">
+			<el-link type="info"  @click="back" style="float:left;margin-top:1.8rem;font-size:large"><返回</el-link>
+			<common-search :searchinput="content"></common-search>
+			</div>
+					
+					</div>
+					`,
+			data(){
+				return{
+					content:''
+				}
+			},
+			methods:{
+				back(){
+					history.back();
+				},
+				jump(){
+			   	const url=new URLSearchParams(window.location.search);
+			   	console.log(url.has('id'));
+			   	var urlid = url.get('id');
+		   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/category/id/'+urlid;
+				axios({
+				 	 method: 'get',
+					  url: uri,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+				        console.log(response);
+				      	// this.$refs.seachinput.value=response.data.data.name;
+				      	this.content = response.data.data.name;
+				      	
+			      	}else{
+			      		
+			      	}
+			      	
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+			  }
+				},
+			mounted:function(){
+				this.jump();
+			}
+		
+		})
+		Vue.component('search-component',{
+			template:`
+			<div>
+			
+			<div>
+				<my-search></my-search>
+				
+				</div>
+			</div>
+			`,
+			data(){
+				return{
+					
+				}
+			},
+			methods:{
+			}
+		})
+
+
+			Vue.component('kuang1-component',{
+			template:`
+			<div class="poemkuang">
+
+			 <div style="margin:3rem auto;text-align:center">
+						  <div style="text-align:center;color:#19537D;font-size:x-large;font-weight:bolder;">
+							  {{title}}</div>
+							<br />
+							<div style="text-align:center;color:grey;">【作者】<span>{{author}}</span>【朝代】<span>{{Dynasty}}</span></div>
+							<br />
+							<div style="text-align:center;line-height:2.5rem" v-for="item in shortcontent">
+								{{item}} 
+							</div>		
+							</div>             
+	             
+					
+			<star-component></star-component>	
+
+			<div style="float:right;margin-top:0.5rem;margin-left:14rem;position:absolute"><i class="el-icon-picture-outline">&nbsp;<el-link type="primary" style="color:#19537D;font-weight:bold" :titleid='urlid' @click="share()">-生成图片分享</el-link></i></div>
+			
+	             
+					<br /><br /><br />
+
+		            <div style="text-align:left;font-size:large;color:#19537D;margin-left:4rem
+		           "><i class="el-icon-collection-tag"></i>{{tag}}<el-button size="mini" round v-for="item in categories"  style="color:#19537D">{{item.name}}</el-button>
+						</div>
+				<div style="height:2rem"></div>
+
+
+			</div>
+			`,
+			data(){
+				return{
+					title:null,
+					author:null,
+					Dynasty:'',
+					shortcontent:null,
+					selectedId:null,
+					poetries:null,
+					categories:null,
+					tag:'tag：'
+				}
+			},
+			methods:{
+				jumppoem(){
+				   	const url=new URLSearchParams(window.location.search);
+				   	console.log(url.has('titleid'));
+				   	if(url.has('titleid')==true)
+				   	{
+				   		console.log('进入jumppoem');
+						var urlid = url.get('titleid');
+				   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/poetry/id/'+urlid;
+						axios({
+						 	 method: 'get',
+							  url: uri,
+							 })
+					    .then(response =>
+					      { 
+					      	if(response.data.code==200)
+					      	{
+					      		console.log('进入response');
+						        console.log(response);
+						      	// this.$refs.seachinput.value=response.data.data.name;
+						      	this.poetries = response.data.data;
+						      	this.title=this.poetries.title;
+						      	this.author=this.poetries.author;
+						      	this.categories=this.poetries.categories;
+						      	if(this.poetries.dynasty=="T")
+						      	{
+						      		this.Dynasty="唐";
+						      	}else {
+						      		this.Dynasty="宋";
+						      	}
+						        this.shortcontent=this.poetries.content.split('|');
+
+						      	
+					       	}
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+				   	}
+			   
+				  },
+				  share(){
+					 const url=new URLSearchParams(window.location.search);
+						 if(url.has('titleid')){
+							this.selectedId=url.get('titleid');
+							window.location.href='share.html?titleid='+this.selectedId;
+					
+				  }
+				}
+			},
+			mounted:function(){
+				this.jumppoem();
+			}
+		})
+
+
+Vue.component('kuang2-component',{
+			template:`
+			<div class="poemkuang">
+				 <div style="text-align:left;font-size:larger;margin-left:4.3rem;margin-top:2rem">{{name}}</div>
+			  <div style="text-align:left;font-family:NSimSun;margin-left:4.3rem;
+			  margin-right:4.2rem;margin-top:1.5rem;line-height:2rem">{{intro}}</div>
+		          
+				<div style="height:2rem"></div>
+
+
+			</div>
+			`,
+			data(){
+				return{
+					name:null,
+					intro:null,
+					shortcontent:null,
+					
+					poetries:null,
+					
+				}
+			},
+			methods:{
+				jumppoem(){
+				   	const url=new URLSearchParams(window.location.search);
+				   	console.log(url.has('titleid'));
+				   	if(url.has('titleid')==true)
+				   	{
+				   		console.log('进入jumppoem');
+						var urlid = url.get('titleid');
+				   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/poetry/id/'+urlid;
+						axios({
+						 	 method: 'get',
+							  url: uri,
+							 })
+					    .then(response =>
+					      { 
+					      	if(response.data.code==200)
+					      	{
+					      		console.log('进入response');
+						        console.log(response);
+						      	// this.$refs.seachinput.value=response.data.data.name;
+						      	this.poetries = response.data.data;
+						      	this.name=this.poetries.poetryAuthor.name;
+						      	this.intro=this.poetries.poetryAuthor.intro;
+						      	if(this.poetries.dynasty=="T")
+						      	{
+						      		this.Dynasty="唐";
+						      	}else {
+						      		this.Dynasty="宋";
+						      	}
+						        this.shortcontent=this.poetries.content.split('|');
+
+						      	
+					       	}
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+				   	}
+			   
+				  }
+				},
+			mounted:function(){
+				this.jumppoem();
+			}
+		})
+
+
+			
+
+
+
+
+		new Vue({
+			data(){
+				return{
+
+				}
+			},
+			methods:{
+
+			}
+		}).$mount('#app')
+	</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	
+	<title>search_author</title>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+	<script src="node_modules/element-ui/lib/index.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script type="text/javascript" src="search.js"></script>
+	<script type="text/javascript" src="navigator.js"></script>
+	<style>
+html{font-size:62.5%;}
+body {font:normal 100% Arial,sans-serif;font-size:14px; font-size:1.4rem; } 
+img { width:100%; -ms-interpolation-mode: bicubic;} 
+	[v-cloak]{
+		display: none;
+	}
+.top{
+	display:inline-block;
+	width:80%;
+	height: 30rem;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-left: 10%
+}
+.kuang{
+	display:inline-block;
+	width:85%;
+	height: auto;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-top: 1rem;
+	margin-left: 10%;
+	margin-right:10%;
+}
+.smallkuang{
+	display:inline-block;
+	width:15%;
+	height: 5rem;
+	border: #C8C7BC solid 0.15rem;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-top: 2rem;
+	margin-right: 74.5%;
+	padding-top:1rem;
+	font-size:3rem;
+	font-weight:bolder;
+	font-family:NSimSun;
+	color:#19537D;
+	text-align:center;
+}
+
+.left{ width:30%; float:left} 
+.right{ width:70%; float:right;}
+@media screen and (max-device-width: 48rem) {
+    #divMain{
+    float: none;
+    width:auto;
+    }
+    #divSidebar {
+    display:none;
+    }
+}
+table{
+	border-collapse: collapse;
+}
+
+a{  text-decoration:none;}
+a:hover{  text-decoration:none;}
+a:active{  text-decoration:none;}
+	</style>
+</head>
+<body style="background-color: #E1E0C7">
+
+		<div class="container" id="container" v-cloak>
+			<div>
+				<common-navigator active="1">
+					
+				</common-navigator>
+			<search-component>
+			</search-component>
+
+			<table style="width:100%">
+				<tr>
+					<td style="width:60%;padding-right: 10rem;vertical-align:top;text-align:right;">
+						<kuang3-component >
+						</kuang3-component>
+					</td>
+				
+					
+				</tr>
+			</table>
+			
+			
+			</div>
+		</div>
+
+
+
+	<script>
+		
+		Vue.component('search-component',{
+			template:`
+			<div>
+			
+			<div>
+				<my-search></my-search>
+				
+				</div>
+			</div>
+			`,
+			data(){
+				return{
+					
+				}
+			},
+			methods:{
+			}
+		})
+		Vue.component('my-search',{
+			template:`
+			<div>
+			<div style="display:inline-block;float:left;margin-top:0rem;margin-left:7%">
+			<el-link type="info"  @click="back" style="float:left;margin-top:1.8rem;font-size:large"><返回</el-link>
+			<common-search :searchinput="content"></common-search>
+			</div>
+					
+			
+					</div>
+					`,
+			data(){
+				return{
+					content:''
+				}
+			},
+			methods:{
+				back(){
+					history.back();
+				},
+				jump(){
+			   	const url=new URLSearchParams(window.location.search);
+			   	console.log(url.has('id'));
+			   	var urlid = url.get('id');
+		   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/category/id/'+urlid;
+				axios({
+				 	 method: 'get',
+					  url: uri,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+				        console.log(response);
+				      	// this.$refs.seachinput.value=response.data.data.name;
+				      	this.content = response.data.data.name;
+				      	
+			      	}else{
+			      		
+			      	}
+			      	
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+			  }
+				},
+			mounted:function(){
+				this.jump();
+			}
+		
+		})
+		 
+
+
+		 Vue.component('kuang3-component',{
+			template:`
+			<div>
+			<table>
+				<tr>
+					<td>
+					<div class="smallkuang">
+					<span>{{name}}</span>【{{Dynasty}}】</div>
+					</td>
+				</tr>
+				<tr>
+					<td >
+						<div class="kuang" v-for="poetry in poetries">
+						 <div style="text-align:left;margin-left:2rem;margin-top:0.8rem;color:#19537D;font-size:1.5rem;font-weight:bold;cursor:pointer;"  :titleid=poetry.id
+								  @click="jumptopoem($event)">
+										  {{poetry.title}}</div>
+										<div style="text-align:left;margin-left:1rem;color:grey;font-size:1.4rem">【作者】<span>{{poetry.author}}</span>【朝代】<span>{{Dynasty}}</span></div>
+										<div style="text-align:left;margin-left:2rem;margin-right:2rem;
+										font-family:NSimSun;line-height:2.5rem;padding-bottom:0.8rem"><span  v-for="item in poetry.content">
+											{{item}} 
+										</span></div>	
+							</div>
+					</td>
+				</tr>
+			</table>
+				
+				
+						
+				
+			</div>
+					`,
+			data(){
+				return{
+					name:'',
+					Dynasty:'',
+					
+					
+					poetries:null
+				}
+			},
+			methods:{
+				getpoem(){
+			   	const url=new URLSearchParams(window.location.search);
+			   	console.log(url.has('aid'));
+			   	var urlid = url.get('aid');
+		   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/author/'+urlid;
+				axios({
+				 	 method: 'get',
+					  url: uri,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+				        console.log("进入getpoem()");
+				      	// this.$refs.seachinput.value=response.data.data.name;
+				      	this.name = response.data.data.name;
+						console.log(this.name);
+				      	this.poetries = response.data.data.poetries;
+				      	if(this.poetries.dynasty=="T")
+				      	{
+				      		this.Dynasty="唐";
+				      	}else {
+				      		this.Dynasty="宋";
+				      	}
+				       this.poetries.forEach(function(c){
+					       	c.content=c.content.split('|');
+				       })
+			      	}else{
+			      		
+			      	}
+			      	
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+				 
+				 },
+				 jumptopoem(e){
+					window.location.href='poem.html?titleid=' + e.currentTarget.getAttribute('titleid');
+				}
+			      
+				},
+			mounted:function(){
+				this.getpoem();
+				
+			}
+		
+		})
+		
+	new Vue({
+		data(){
+			return{
+				}		
+			},
+		methods:{
+			}
+		
+		}).$mount('#container')
+	</script>
+</body>
+</html>

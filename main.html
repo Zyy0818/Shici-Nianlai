@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	
+	<title>main</title>
+
+	<script src="https://how2j.cn/study/js/jquery/2.0.0/jquery.min.js"></script>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+	<script src="node_modules/element-ui/lib/index.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script type="text/javascript" src="search.js"></script>
+	<script type="text/javascript" src="navigator.js"></script>
+	<style>
+html{font-size:62.5%;}
+body {font:normal 100% Arial,sans-serif;font-size:14px; font-size:1.4rem; } 
+img { width:100%; -ms-interpolation-mode: bicubic;} 
+	[v-cloak]{
+		display: none;
+	}
+@keyframes fadein{
+    0%{opacity: 0;
+         }
+    100%{
+        opacity: 1;
+
+    }
+}
+@-webkit-keyframes fadein{
+        0%{opacity: 0;
+         }
+    100%{
+        opacity: 1;
+
+    }
+}
+@-moz-keyframes fadein{
+        0%{opacity: 0;
+         }
+    100%{
+        opacity: 1;
+
+    }
+}
+@-o-keyframes fadein{
+        0%{opacity: 0;
+         }
+    100%{
+        opacity: 1;
+
+    }
+}
+@-ms-keyframes fadein{
+        0%{opacity: 0;
+         }
+    100%{
+        opacity: 1;
+
+    }
+}
+body{
+    animation:fadein 3s linear 1;
+    -webkit-animation:fadein 3s linear 1;
+    -moz-animation:fadein 3s linear 1;
+    -o-animation:fadein 3s linear 1;
+    -ms-animation:fadein 3s linear 1;
+}
+input::-webkit-input-placeholder { 
+    /* WebKit browsers */ 
+    font-size:1.7rem;
+    color: #333;
+    font-family:NSimSun; 
+} 
+input::-moz-placeholder { 
+    /* Mozilla Firefox 19+ */ 
+    font-size:1.7rem;
+    color: #333;
+    font-family:NSimSun;
+} 
+input:-ms-input-placeholder { 
+    /* Internet Explorer 10+ */ 
+    font-size:1.7rem;
+    color: #333;
+    font-family:NSimSun;
+}
+.left{ width:30%; float:left} 
+.right{ width:70%; float:right;}
+
+.middle{
+	display:inline-block;
+	width:80%;
+	height: 62rem;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 02rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-top: 1.3rem;
+	margin-left: 10%
+},
+.image{
+	display:inline-block;
+	margin: 7rem 40rem;
+	width:4rem;
+	height:4rem;
+}
+a{ color:white; text-decoration:none;}
+a:hover{ color:white; text-decoration:none;}
+a:active{ color:white; text-decoration:none;}
+@media screen and (max-device-width: 480px) {
+    #divMain{
+    float: none;
+    width:auto;
+    }
+    #divSidebar {
+    display:none;
+    }
+}
+</style>
+</head>
+<body style="background-color: #E1E0C7">
+	<div>
+	
+		<div class="container" id="container" v-cloak>
+			<my-component>
+				
+			</my-component>
+		</div>	
+		</div>
+	
+	
+
+		<script>
+			
+		Vue.component('my-component',{
+			template:`
+			<div>
+			<common-navigator active="1"></common-navigator>
+			<div class="middle" >
+			<div style="display:inline-block;margin: 4rem 43%;"><img src="photo/1.png" style="width:19rem;height:17rem;">
+			</div>
+			<div style="margin-left:35%">
+			<common-search></common-search>
+			</div>
+			</div>
+			</div>
+			`,
+			data(){
+				return{
+					
+				}
+			},
+			methods:{
+			}
+		})
+		
+	
+		new Vue({
+		data(){
+			return{
+					
+				}		
+			},
+		methods:{
+		}
+		}).$mount('#container')
+  	
+		</script>
+</body>
+</html>

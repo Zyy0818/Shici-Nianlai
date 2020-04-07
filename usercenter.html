@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	
+	<title>usecenter</title>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+	<script src="node_modules/element-ui/lib/index.js"></script>
+	<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+	<script type="text/javascript" src="navigator.js"></script>
+<style>
+html{font-size:62.5%;}
+body {font:normal 100% Arial,sans-serif;font-size:14px; font-size:1.4rem; } 
+img { width:100%; -ms-interpolation-mode: bicubic;} 
+	[v-cloak]{
+		display: none;
+	}
+	.avatar-uploader .el-upload {
+    border: 0.1rem dashed #d9d9d9;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 2.8rem;
+    color: #8c939d;
+    width: 17.8rem;
+    height: 17.8rem;
+    line-height: 17.8rem;
+    text-align: center;
+  }
+  .avatar {
+    width: 17.8rem;
+    height: 17.8rem;
+    display: block;
+  }
+.kuang{
+	display:inline-block;
+	border: #C8C7BC solid 0.15rem;
+	background-color:#F0EFE2;
+	border-radius: 1.5rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+	margin-top: 1rem;
+	line-height: 2.5rem
+}
+.buttonborder{
+	border-radius: 1.3rem;
+	box-shadow: 0 0.2rem 1.2rem 0 rgba(0, 0, 0, 0.1);
+}
+.left{ width:30%; float:left} 
+.right{ width:70%; float:right;}
+@media screen and (max-device-width: 48rem) {
+    #divMain{
+    float: none;
+    width:auto;
+    }
+    #divSidebar {
+    display:none;
+    }
+}
+a{ color:white; text-decoration:none;}
+a:hover{ color:white; text-decoration:none;}
+a:active{ color:white; text-decoration:none;}
+</style>
+</head>
+<body style="background-color: #E1E0C7">
+	<div id="app">
+		<common-navigator active="5">
+		</common-navigator>
+		<table>
+			<tr>
+				<td style="width:138rem;height: 64rem">
+					<div  style="display:inline-block;height:96%;width:90%;margin-left: 5%">
+						  <el-tabs tab-position="left" style="height: auto;padding-top: 5rem;">
+						    <el-tab-pane label="我的信息"><user></user></el-tab-pane>
+						    <el-tab-pane label="我的收藏"><star></star></el-tab-pane>					    
+						  </el-tabs>
+					</div>
+				</td>
+				<td style="width:38rem;height:64rem">
+					<div class="kuang" style="width:30rem;height:80%;margin-top: auto;">
+						<el-upload
+						  class="avatar-uploader"
+						  action="https://jsonplaceholder.typicode.com/posts/"
+						  :show-file-list="false"
+						  :on-success="handleAvatarSuccess"
+						  :before-upload="beforeAvatarUpload"
+
+						  style="margin-top: 5rem;margin-left: 6rem">
+						  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+						  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+						<div style="margin-left:12rem;margin-top: 2rem;font-size:2rem">Hi,{{nicheng}}</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<script>
+
+		Vue.component('user',{
+				template:`
+				<div class="kuang" style="width:90rem;height:51rem;margin-left:3rem">
+					<div style="margin-top: 10%;margin-left: 26%">
+						<el-form :label-position="labelPosition" label-width="8rem" :model="formLabelAlign" >
+						  <el-form-item label="昵称">
+						    <el-input v-model="formLabelAlign.nicheng"  style="width:30rem" ></el-input>
+						  </el-form-item>
+						  <el-form-item label="用户名">
+						    <el-input  disabled v-model="formLabelAlign.username"  style="width:30rem" ></el-input>
+						  </el-form-item>
+						  <el-form-item label="密码">
+						    <el-input type="password" v-model="formLabelAlign.password" style="width:30rem;" ></el-input>
+						  </el-form-item>
+						   <el-form-item label="邮箱">
+						    <el-input  v-model="formLabelAlign.email" style="width:30rem;" ></el-input>
+						  </el-form-item>
+						</el-form>
+						<el-button type="success" round style="margin-top: 1rem ;margin-left:8rem;width:12rem" v-text="text1"  @click="save"></el-button>
+						<el-button type="danger" round style="margin-top: 1rem;margin-left:5rem;width:12rem" v-text="text2"  @click="exit"></el-button>
+						
+					</div>
+				</div>
+				`,
+				data(){
+					return{
+					labelPosition: 'right',
+					 formLabelAlign: {
+					  nicheng:'',
+			          username: '',
+			          password: '********',
+			          email:''
+			        },
+					text1:'保存',
+					text2:'退出'	
+					}
+				},
+				methods:{
+					 open() {
+			        this.$message('恭喜，保存成功');
+			      },
+			      fail() {
+			        this.$message('抱歉，保存失败');
+			      },
+				 load(){
+				   		
+				   		var uri="http://rap2.taobao.org:38080/app/mock/245255/api/user/login/check";
+					 	axios({
+						 	 method: 'get',
+							  url: uri,
+							 })
+					    .then(response =>
+					      { 
+					      	if(response.data.code==200)
+					      	{
+						       
+								this.formLabelAlign.nicheng=response.data.data.name;
+								this.formLabelAlign.username=response.data.data.username;
+								this.formLabelAlign.email=response.data.data.email;
+					       	}
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+		   	
+		 	
+					 },
+					 save(){
+						  axios
+					      .put('http://rap2.taobao.org:38080/app/mock/245255/api/user/update',{
+					      	 name:this.formLabelAlign.nicheng,
+					      	 password:this.formLabelAlign.password,
+					      	 email:this.formLabelAlign.email
+					      })
+					      .then(response =>
+					      { 
+					      	console.log('进入save');
+					      	if(response.data.code == 200){
+					      		this.open();
+
+					      	}else{
+						  		this.fail();
+					      	}
+							
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+					 },
+					 exit(){
+						   axios
+					      .get('http://rap2.taobao.org:38080/app/mock/245255/api/user/logout',{
+					      
+					      })
+					      .then(response =>
+					      { 
+					      	
+					      	if(response.data.code == 200){
+					      		
+					      		window.location.href='main.html';
+					      	}else{
+						  		
+					      	}
+							
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+							 }
+					},
+					mounted:function(){
+						this.load();
+					}
+
+			});
+		Vue.component('star',{
+				template:`
+				<div>
+				<div class="kuang" style="width:90rem;height:auto;margin-left:3rem"
+				 v-for="favour in favours">
+				 	<div style="display:inline;color:grey;float:right;margin-right:2rem;margin-top:0.8rem">{{favour.createDate}}</div>
+						 <div style="display:inline;text-align:left;margin-top:1.2rem;margin-left:2rem;color:#19537D;font-size:1.5rem;font-weight:bold;cursor:pointer;"  :titleid=favour.poetry.id
+						  @click="jumptopoem($event)">
+								  {{favour.poetry.title}}</div>
+								<div style="text-align:left;margin-left:1rem;color:grey;font-size:1.4rem">【作者】<span>{{favour.poetry.author}}</span>【朝代】<span>{{favour.poetry.dynasty}}</span></div>
+								<div style="text-align:left;margin-left:2rem;margin-right:2rem;
+								font-family:NSimSun;line-height:2.5rem;padding-bottom:0.8rem"><span  v-for="item in favour.poetry.content">
+									{{item}} 
+								</span></div>	
+					</div>
+					<div style="height:1.5rem"></div>
+					<div style="float:left;display:inline-block">
+					 <el-button type="primary"  class="buttonborder"   style="float:left;margin-left:28rem;width:20rem"
+					 @click="clickdown"
+					 :disabled="downdata">{{down}}</el-button>
+					<el-button class="buttonborder" type="info" style="margin-left:3rem;width:10rem"
+					@click="clickup" :disabled="updata">{{up}}</el-button>
+					</div>
+				</div>
+				</div>
+				`,
+				data(){
+					return{
+						poemstart:0,
+						poemcount:5,
+						favours:null,
+						up:'上一页',
+						down:'下一页',
+						updata:false,
+						downdata:false
+				}
+						
+					
+				},
+				methods:{
+					clickup(){
+					
+						this.poemstart=this.poemstart-this.poemcount;
+						this.getpoem();
+					
+					
+					
+				},
+				clickdown(){
+					
+					this.poemstart=this.poemstart+this.poemcount;
+					this.getpoem();
+				},
+				getpoem(){
+					if(this.poemstart==0)
+					{
+						this.updata=true;
+					}else{
+						this.updata=false;
+					}
+			    	
+				   	
+				   		console.log("enter!");
+				   	   	var uri='http://rap2.taobao.org:38080/app/mock/245255/api/favours/start/'+this.poemstart+'/count/'+this.poemcount;
+				   	   	console.log(uri);
+						axios({
+						 	 method: 'get',
+							  url: uri,
+							 })
+					    .then(response =>
+					      { 
+					      	if(response.data.code==200)
+					      	{
+					      		
+						        console.log(response);
+						      	// this.$refs.seachinput.value=response.data.data.name;
+						      	this.favours = response.data.data;
+						      	console.log(this.favours);
+						      	Date.prototype.toLocaleString = function() {
+							          return this.getFullYear() + "年" + (this.getMonth() + 1) 
+							          + "月" + this.getDate() + "日 ";
+							    };
+						        this.favours.forEach(function(c){
+					       			c.poetry.content=c.poetry.content.split('|');
+					       			if(c.poetry.dynasty=="T")
+							      	{
+							      		c.poetry.dynasty="唐";
+							      	}else {
+							      		c.poetry.dynasty="宋";
+							      	}
+									var unixTimestamp = new Date( c.createDate ) ;
+									c.createDate = unixTimestamp.toLocaleString();
+									
+							      	
+						       })
+
+						      	
+					       	}
+					      })
+					      .catch(function (error) { // 请求失败处理
+					        console.log(error);
+					      });
+				   	
+				 
+				 },
+				 jumptopoem(e){
+					window.location.href='poem.html?titleid=' + e.currentTarget.getAttribute('titleid');
+				}
+			      
+				},
+			mounted:function(){
+				this.getpoem();
+				
+			}
+
+			});
+
+		
+
+		new Vue({
+		data(){
+		return{
+			imageUrl: '',
+			nicheng:null
+	}
+	},
+		methods:{
+		 load(){
+		   		
+		   		var uri="http://rap2.taobao.org:38080/app/mock/245255/api/user/login/check";
+			 	axios({
+				 	 method: 'get',
+					  url: uri,
+					 })
+			    .then(response =>
+			      { 
+			      	if(response.data.code==200)
+			      	{
+				       
+						this.nicheng=response.data.data.name;
+			       	}else{
+			       		window.location.href='login.html';
+			       	}
+			      })
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+		   	
+		 	
+		 },
+			 handleAvatarSuccess(res, file) {
+	        this.imageUrl = URL.createObjectURL(file.raw);
+	      },
+	      beforeAvatarUpload(file) {
+	        const isJPG = file.type === 'image/jpeg';
+	        const isLt2M = file.size / 1024 / 1024 < 2;
+
+	        if (!isJPG) {
+	          this.$message.error('上传头像图片只能是 JPG 格式!');
+	        }
+	        if (!isLt2M) {
+	          this.$message.error('上传头像图片大小不能超过 2MB!');
+	        }
+	        return isJPG && isLt2M;
+	      }
+	    
+	},
+	mounted:function(){
+		this.load();
+	}
+	}).$mount('#app')
+	</script>
+</body>
+</html>
